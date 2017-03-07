@@ -1,0 +1,29 @@
+group 'info.meoblast001'
+version '0.1-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'application'
+
+sourceCompatibility = 1.5
+
+mainClassName = 'info.meoblast001.seallyracing.Main'
+
+repositories {
+  mavenCentral()
+  jcenter()
+  maven { url "http://dl.bintray.com/jmonkeyengine/com.jme3" }
+}
+
+dependencies {
+  compile 'com.jme3:jme3-core:3.0.+'
+  compile 'com.jme3:jme3-effects:3.0.+'
+  compile 'com.jme3:jme3-networking:3.0.+'
+  compile 'com.jme3:jme3-plugins:3.0.+'
+  compile 'com.jme3:jme3-jogg:3.0.+'
+  compile 'com.jme3:jme3-terrain:3.0.+'
+  compile 'com.jme3:jme3-blender:3.0.+'
+  compile 'com.jme3:jme3-jbullet:3.0.+'
+  compile 'com.jme3:jme3-niftygui:3.0.+'
+  compile 'com.jme3:jme3-desktop:3.0.+'
+  compile 'com.jme3:jme3-lwjgl:3.0.+'
+}
