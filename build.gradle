@@ -10,7 +10,6 @@ mainClassName = 'info.meoblast001.seallyracing.Main'
 
 repositories {
   mavenCentral()
-  jcenter()
   maven { url "http://dl.bintray.com/jmonkeyengine/com.jme3" }
 }
 
