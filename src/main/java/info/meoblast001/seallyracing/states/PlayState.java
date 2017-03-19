@@ -56,7 +56,7 @@ public class PlayState extends AbstractAppState {
     // Create a static object sitting forward and to the side.
     Geometry staticObject = new Geometry("StaticObject", box);
     staticObject.setMaterial(mat);
-    staticObject.setLocalTranslation(2, 0, -5);
+    staticObject.setLocalTranslation(2, 0, 100);
     this.rootNode.attachChild(staticObject);
 
     // Create the camera attached to the player.
@@ -72,8 +72,8 @@ public class PlayState extends AbstractAppState {
     input.addMapping(PlayerInput.MOVE_LEFT, new KeyTrigger(KeyInput.KEY_LEFT));
     input.addMapping(PlayerInput.MOVE_RIGHT,
                      new KeyTrigger(KeyInput.KEY_RIGHT));
-    input.addMapping(PlayerInput.MOVE_UP, new KeyTrigger(KeyInput.KEY_UP));
-    input.addMapping(PlayerInput.MOVE_DOWN, new KeyTrigger(KeyInput.KEY_DOWN));
+    input.addMapping(PlayerInput.MOVE_UP, new KeyTrigger(KeyInput.KEY_DOWN));
+    input.addMapping(PlayerInput.MOVE_DOWN, new KeyTrigger(KeyInput.KEY_UP));
   }
 
   /**
@@ -89,7 +89,7 @@ public class PlayState extends AbstractAppState {
 
     // Update player character.
     Vector3f forward = player.getLocalRotation().mult(Vector3f.UNIT_Z).
-      mult(-PLAYER_SPEED * tpf);
+      mult(PLAYER_SPEED * tpf);
     player.move(forward);
   }
 }

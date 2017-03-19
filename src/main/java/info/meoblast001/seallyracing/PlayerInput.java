@@ -40,9 +40,9 @@ public class PlayerInput implements AnalogListener, ActionListener {
     } else if (name.equals(MOVE_RIGHT)) {
       player.rotate(0.0f, -PlayState.PLAYER_TORQUE * tpf, 0.0f);
     } else if (name.equals(MOVE_UP)) {
-      player.rotate(PlayState.PLAYER_TORQUE * tpf, 0.0f, 0.0f);
-    } else if (name.equals(MOVE_DOWN)) {
       player.rotate(-PlayState.PLAYER_TORQUE * tpf, 0.0f, 0.0f);
+    } else if (name.equals(MOVE_DOWN)) {
+      player.rotate(PlayState.PLAYER_TORQUE * tpf, 0.0f, 0.0f);
     }
   }
 }
