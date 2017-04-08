@@ -69,11 +69,10 @@ public class PlayState extends AbstractAppState {
       PlayerInput.MOVE_RIGHT, PlayerInput.MOVE_UP, PlayerInput.MOVE_DOWN };
     input.addListener(new PlayerInput(this.player),
                       mappingNames);
-    input.addMapping(PlayerInput.MOVE_LEFT, new KeyTrigger(KeyInput.KEY_LEFT));
-    input.addMapping(PlayerInput.MOVE_RIGHT,
-                     new KeyTrigger(KeyInput.KEY_RIGHT));
-    input.addMapping(PlayerInput.MOVE_UP, new KeyTrigger(KeyInput.KEY_DOWN));
-    input.addMapping(PlayerInput.MOVE_DOWN, new KeyTrigger(KeyInput.KEY_UP));
+    input.addMapping(PlayerInput.MOVE_LEFT, new KeyTrigger(KeyInput.KEY_A));
+    input.addMapping(PlayerInput.MOVE_RIGHT, new KeyTrigger(KeyInput.KEY_D));
+    input.addMapping(PlayerInput.MOVE_UP, new KeyTrigger(KeyInput.KEY_S));
+    input.addMapping(PlayerInput.MOVE_DOWN, new KeyTrigger(KeyInput.KEY_W));
   }
 
   /**
