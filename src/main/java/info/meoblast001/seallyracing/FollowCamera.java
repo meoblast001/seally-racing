@@ -32,7 +32,6 @@ public class FollowCamera {
     Vector3f distanceTranslation = followTarget.getLocalRotation().
       mult(Vector3f.UNIT_Z).mult(-distance);
     camera.setLocation(targetTranslation.add(distanceTranslation));
-    camera.lookAt(followTarget.getWorldTranslation(),
-                  new Vector3f(0.0f, 1.0f, 0.0f));
+    camera.setRotation(followTarget.getWorldRotation());
   }
 }
