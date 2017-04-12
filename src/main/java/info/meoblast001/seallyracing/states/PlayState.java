@@ -27,8 +27,10 @@ public class PlayState extends AbstractAppState {
   // Torque at which player rotates charchter. For pitch, this does include
   // torque required to undo PLAYER_PITCH_NEUTRALISE_TORQUE.
   public static final float PLAYER_TORQUE = 0.5f;
+  // Maximum allowed pitch (where 1 and -1 are completely up or down).
+  public static final float PLAYER_MAX_PITCH = 0.5f;
   // Torque at which pitch is neutralised. This is performed at every frame.
-  public static final float PLAYER_PITCH_NEUTRALISE_TORQUE = 0.05f;
+  public static final float PLAYER_PITCH_NEUTRALISE_TORQUE = 0.1f;
   // Distance camera should maintain from player.
   public static final float CAMERA_DISTANCE = 10f;
   // Any pitch less than this amount (where 1 and -1 are completely up or down)
@@ -38,6 +40,7 @@ public class PlayState extends AbstractAppState {
   private SimpleApplication app;
   private Node rootNode;
   private Spatial player;
+  private PlayerInput playerInput;
   private FollowCamera followCamera;
 
   /**
@@ -84,7 +87,8 @@ public class PlayState extends AbstractAppState {
     InputManager input = app.getInputManager();
     String[] mappingNames = new String[] { PlayerInput.MOVE_LEFT,
       PlayerInput.MOVE_RIGHT, PlayerInput.MOVE_UP, PlayerInput.MOVE_DOWN };
-    input.addListener(new PlayerInput(this.player), mappingNames);
+    playerInput = new PlayerInput(this.player);
+    input.addListener(playerInput, mappingNames);
     input.addMapping(PlayerInput.MOVE_LEFT, new KeyTrigger(KeyInput.KEY_A));
     input.addMapping(PlayerInput.MOVE_RIGHT, new KeyTrigger(KeyInput.KEY_D));
     input.addMapping(PlayerInput.MOVE_UP, new KeyTrigger(KeyInput.KEY_S));
@@ -107,16 +111,18 @@ public class PlayState extends AbstractAppState {
     player.move(forward.mult(PLAYER_SPEED * tpf));
 
     // Neutralise player pitch at a rate lower than the effects of player input.
-    float pitch = Vector3f.UNIT_Y.dot(forward);
-    if (pitch > PITCH_EXISTS_THRESHOLD) {
-      player.rotate(PLAYER_PITCH_NEUTRALISE_TORQUE * tpf, 0.0f, 0.0f);
-      pitchNeutralised = false;
-    } else if (pitch < -PITCH_EXISTS_THRESHOLD) {
-      player.rotate(-PLAYER_PITCH_NEUTRALISE_TORQUE * tpf, 0.0f, 0.0f);
-      pitchNeutralised = false;
-    } else if (!pitchNeutralised) {
-      player.rotate(pitch * 0.5f * FastMath.PI, 0.0f, 0.0f);
-      pitchNeutralised = true;
+    if (!playerInput.isPitchApplied()) {
+      float pitch = Vector3f.UNIT_Y.dot(forward);
+      if (pitch > PITCH_EXISTS_THRESHOLD) {
+        player.rotate(PLAYER_PITCH_NEUTRALISE_TORQUE * tpf, 0.0f, 0.0f);
+        pitchNeutralised = false;
+      } else if (pitch < -PITCH_EXISTS_THRESHOLD) {
+        player.rotate(-PLAYER_PITCH_NEUTRALISE_TORQUE * tpf, 0.0f, 0.0f);
+        pitchNeutralised = false;
+      } else if (!pitchNeutralised) {
+        player.rotate(pitch * 0.5f * FastMath.PI, 0.0f, 0.0f);
+        pitchNeutralised = true;
+      }
     }
   }
 }
