@@ -48,9 +48,13 @@ public class PlayerInput implements AnalogListener, ActionListener {
       rotation.multLocal(player.getLocalRotation());
       player.setLocalRotation(rotation);
     } else if (name.equals(MOVE_UP)) {
-      player.rotate(-PlayState.PLAYER_TORQUE * tpf, 0.0f, 0.0f);
+      float totalPitchChange =
+          PlayState.PLAYER_TORQUE + PlayState.PLAYER_PITCH_NEUTRALISE_TORQUE;
+      player.rotate(-(totalPitchChange) * tpf, 0.0f, 0.0f);
     } else if (name.equals(MOVE_DOWN)) {
-      player.rotate(PlayState.PLAYER_TORQUE * tpf, 0.0f, 0.0f);
+      float totalPitchChange =
+          PlayState.PLAYER_TORQUE + PlayState.PLAYER_PITCH_NEUTRALISE_TORQUE;
+      player.rotate(totalPitchChange * tpf, 0.0f, 0.0f);
     }
   }
 }
