@@ -2,6 +2,8 @@ package info.meoblast001.seallyracing;
 
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import info.meoblast001.seallyracing.states.PlayState;
 
@@ -36,9 +38,15 @@ public class PlayerInput implements AnalogListener, ActionListener {
    */
   public void onAnalog(String name, float value, float tpf) {
     if (name.equals(MOVE_LEFT)) {
-      player.rotate(0.0f, PlayState.PLAYER_TORQUE * tpf, 0.0f);
+      Quaternion rotation = new Quaternion();
+      rotation.fromAngleAxis(PlayState.PLAYER_TORQUE * tpf, Vector3f.UNIT_Y);
+      rotation.multLocal(player.getLocalRotation());
+      player.setLocalRotation(rotation);
     } else if (name.equals(MOVE_RIGHT)) {
-      player.rotate(0.0f, -PlayState.PLAYER_TORQUE * tpf, 0.0f);
+      Quaternion rotation = new Quaternion();
+      rotation.fromAngleAxis(-PlayState.PLAYER_TORQUE * tpf, Vector3f.UNIT_Y);
+      rotation.multLocal(player.getLocalRotation());
+      player.setLocalRotation(rotation);
     } else if (name.equals(MOVE_UP)) {
       player.rotate(-PlayState.PLAYER_TORQUE * tpf, 0.0f, 0.0f);
     } else if (name.equals(MOVE_DOWN)) {
