@@ -15,8 +15,8 @@ finalised.
 While this project is in early stages of development, there are several ways you
 can start getting involved:
 
-* Look at our issue tracker and wiki at
-  [Seally Racing on Taiga](https://tree.taiga.io/project/meoblast001-seally-racing/).
+* Look at our issue tracker and wiki at the
+  [Seally Racing project in Redmine](https://development.meoblast001.info/projects/seally-racing).
 * Join irc.freenode.net on the channel #seally-racing to get up to date with the
   project status.
 * Fork the project, change the code or art, and submit a pull request.
