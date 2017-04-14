@@ -66,18 +66,31 @@ public class PlayState extends AbstractAppState {
     Geometry player = new Geometry("Player", box);
 
     Material mat = new Material(app.getAssetManager(),
-                                "Common/MatDefs/Misc/Unshaded.j3md");
-    mat.setColor("Color", ColorRGBA.Blue);
+            "Common/MatDefs/Misc/Unshaded.j3md");
+    mat.setColor("Color", ColorRGBA.Red);
     player.setMaterial(mat);
 
     this.rootNode.attachChild(player);
     this.player = player;
 
-    // Create a static object sitting forward and to the side.
-    Geometry staticObject = new Geometry("StaticObject", box);
-    staticObject.setMaterial(mat);
-    staticObject.setLocalTranslation(2, 0, 100);
-    this.rootNode.attachChild(staticObject);
+
+    // Create static objects for top and bottom
+    Box waterBox = new Box(200, 0, 200);
+
+    Material waterMaterial = new Material(app.getAssetManager(),
+            "Common/MatDefs/Misc/Unshaded.j3md");
+    waterMaterial.setColor("Color", ColorRGBA.Blue);
+
+    Geometry upperObject = new Geometry("StaticObject", waterBox);
+    upperObject.setMaterial(waterMaterial);
+    upperObject.setLocalTranslation(-100, 20, -100);
+    this.rootNode.attachChild(upperObject);
+
+    Geometry lowerObject = new Geometry("StaticObject", waterBox);
+    lowerObject.setMaterial(waterMaterial);
+    lowerObject.setLocalTranslation(-100, -20, -100);
+    this.rootNode.attachChild(lowerObject);
+
 
     // Create the camera attached to the player.
     followCamera = new FollowCamera(this.app.getCamera(), this.player,
