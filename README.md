@@ -10,6 +10,24 @@ marked by rings. Race your opponents and be the first to finish. Currently, the
 plan is to make a single network multiplayer mode, but this plan is not
 finalised.
 
+#### Building and Launching
+
+Gradle is used to build this codebase.
+A wrapper is provided that can download Gradle.
+You just need Java first, then you can run via Gradle:
+
+```shell
+./gradlew run
+```
+
+Optionally, build a runnable distribution:
+
+```shell
+./gradlew installDist
+cd build/install/seally-racing
+bin/seally-racing
+```
+
 #### Getting Involved
 
 While this project is in early stages of development, there are several ways you
