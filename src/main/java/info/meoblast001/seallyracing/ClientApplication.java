@@ -3,7 +3,10 @@ package info.meoblast001.seallyracing;
 import com.jme3.app.SimpleApplication;
 import com.jme3.network.Client;
 import com.jme3.network.Network;
+import info.meoblast001.seallyracing.network.ClientNetListener;
+import info.meoblast001.seallyracing.network.MessageRegistry;
 import info.meoblast001.seallyracing.states.PlayState;
+import info.meoblast001.seallyracing.states.WaitingState;
 
 import java.io.IOException;
 
@@ -13,6 +16,8 @@ import java.io.IOException;
 public class ClientApplication extends SimpleApplication {
   private String host;
   private int port;
+  private PlayState playState;
+  private WaitingState waitingState;
 
   /**
    * Constructor.
@@ -22,6 +27,7 @@ public class ClientApplication extends SimpleApplication {
   public ClientApplication(String host, int port) {
     this.host = host;
     this.port = port;
+    MessageRegistry.registerMessages();
   }
 
   /**
@@ -33,6 +39,7 @@ public class ClientApplication extends SimpleApplication {
     try {
       Client client = Network.connectToServer(host, port);
       client.start();
+      new ClientNetListener(this, client);
       System.out.println("Connected!");
     } catch (IOException e) {
       // TODO: Handle this exception.
@@ -40,6 +47,16 @@ public class ClientApplication extends SimpleApplication {
     }
 
     this.flyCam.setEnabled(false);
-    stateManager.attach(new PlayState());
+    waitingState = new WaitingState();
+    stateManager.attach(waitingState);
+  }
+
+  /**
+   * Begin the game.
+   */
+  public void beginGame() {
+    playState = new PlayState();
+    waitingState.setEnabled(false);
+    stateManager.attach(playState);
   }
 }

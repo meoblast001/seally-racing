@@ -3,6 +3,8 @@ package info.meoblast001.seallyracing;
 import com.jme3.app.SimpleApplication;
 import com.jme3.network.Network;
 import com.jme3.network.Server;
+import info.meoblast001.seallyracing.network.MessageRegistry;
+import info.meoblast001.seallyracing.network.ServerNetListener;
 import info.meoblast001.seallyracing.states.PlayState;
 
 import java.io.IOException;
@@ -12,13 +14,16 @@ import java.io.IOException;
  */
 public class ServerApplication extends SimpleApplication {
   private int port;
+  private int expectedClients;
 
   /**
    * Constructor.
    * @param port Port on which to run the server.
    */
-  public ServerApplication(int port) {
+  public ServerApplication(int port, int expectedClients) {
     this.port = port;
+    this.expectedClients = expectedClients;
+    MessageRegistry.registerMessages();
   }
 
   /**
@@ -30,6 +35,7 @@ public class ServerApplication extends SimpleApplication {
     try {
       Server server = Network.createServer(port);
       server.start();
+      new ServerNetListener(this, server, expectedClients);
     } catch (IOException e) {
       // TODO: Handle exception.
       System.err.println("Error creating server.");

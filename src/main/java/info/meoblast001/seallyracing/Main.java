@@ -21,18 +21,23 @@ public class Main {
      // TODO: Make client completely configurable in game. Make server
      // configurable through config file.
     if (args.length < 3) {
-      System.err.println("Requires three parameters: Mode, host, and port.");
+      System.err.println("Requires parameters: client <host> <port>, "
+          + "server <port> <expectedClients>");
       return;
     }
     String mode = args[0];
-    String host = args[1];
-    int port = Integer.parseInt(args[2]);
 
     if (mode.equals("client")) {
+      String host = args[1];
+      int port = Integer.parseInt(args[2]);
+
       ClientApplication app = new ClientApplication(host, port);
       app.start();
     } else if (mode.equals("server")) {
-      ServerApplication app = new ServerApplication(port);
+      int port = Integer.parseInt(args[1]);
+      int expectedClients = Integer.parseInt(args[2]);
+
+      ServerApplication app = new ServerApplication(port, expectedClients);
       app.start(JmeContext.Type.Headless);
     } else {
       System.err.println("Mode must be \"client\" or \"server\".");
