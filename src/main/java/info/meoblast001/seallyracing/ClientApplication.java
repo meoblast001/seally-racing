@@ -16,6 +16,7 @@ import java.io.IOException;
 public class ClientApplication extends SimpleApplication {
   private String host;
   private int port;
+  private Client client;
   private PlayState playState;
   private WaitingState waitingState;
 
@@ -37,10 +38,9 @@ public class ClientApplication extends SimpleApplication {
   @Override
   public void simpleInitApp() {
     try {
-      Client client = Network.connectToServer(host, port);
+      client = Network.connectToServer(host, port);
       client.start();
       new ClientNetListener(this, client);
-      System.out.println("Connected!");
     } catch (IOException e) {
       // TODO: Handle this exception.
       System.err.println("Error connecting to server.");
@@ -49,6 +49,15 @@ public class ClientApplication extends SimpleApplication {
     this.flyCam.setEnabled(false);
     waitingState = new WaitingState();
     stateManager.attach(waitingState);
+  }
+
+  /**
+   * @see SimpleApplication#destroy()
+   */
+  @Override
+  public void destroy() {
+    client.close();
+    super.destroy();
   }
 
   /**

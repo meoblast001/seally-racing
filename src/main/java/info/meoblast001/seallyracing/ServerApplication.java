@@ -15,6 +15,7 @@ import java.io.IOException;
 public class ServerApplication extends SimpleApplication {
   private int port;
   private int expectedClients;
+  Server server;
 
   /**
    * Constructor.
@@ -33,7 +34,7 @@ public class ServerApplication extends SimpleApplication {
   @Override
   public void simpleInitApp() {
     try {
-      Server server = Network.createServer(port);
+      server = Network.createServer(port);
       server.start();
       new ServerNetListener(this, server, expectedClients);
     } catch (IOException e) {
@@ -43,5 +44,14 @@ public class ServerApplication extends SimpleApplication {
 
     this.flyCam.setEnabled(false);
     stateManager.attach(new PlayState());
+  }
+
+  /**
+   * @see SimpleApplication#destroy()
+   */
+  @Override
+  public void destroy() {
+    server.close();
+    super.destroy();
   }
 }
