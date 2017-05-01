@@ -11,19 +11,36 @@ mainClassName = 'info.meoblast001.seallyracing.Main'
 
 repositories {
   mavenCentral()
-  maven { url "http://dl.bintray.com/jmonkeyengine/com.jme3" }
+  maven { url "http://dl.bintray.com/jmonkeyengine/org.jmonkeyengine" }
+}
+
+project(":assets") {
+  apply plugin: "java"
+
+  buildDir = rootProject.file("build/assets")
+
+  sourceSets {
+    main {
+      resources {
+        srcDir '.'
+        include "**/*.j3o", "**/*.j3m", "**/*.png"
+      }
+    }
+  }
 }
 
 dependencies {
-  compile 'com.jme3:jme3-core:3.0.+'
-  compile 'com.jme3:jme3-effects:3.0.+'
-  compile 'com.jme3:jme3-networking:3.0.+'
-  compile 'com.jme3:jme3-plugins:3.0.+'
-  compile 'com.jme3:jme3-jogg:3.0.+'
-  compile 'com.jme3:jme3-terrain:3.0.+'
-  compile 'com.jme3:jme3-blender:3.0.+'
-  compile 'com.jme3:jme3-jbullet:3.0.+'
-  compile 'com.jme3:jme3-niftygui:3.0.+'
-  compile 'com.jme3:jme3-desktop:3.0.+'
-  compile 'com.jme3:jme3-lwjgl:3.0.+'
+  compile 'org.jmonkeyengine:jme3-core:3.1.0-stable'
+  compile 'org.jmonkeyengine:jme3-effects:3.1.0-stable'
+  compile 'org.jmonkeyengine:jme3-networking:3.1.0-stable'
+  compile 'org.jmonkeyengine:jme3-plugins:3.1.0-stable'
+  compile 'org.jmonkeyengine:jme3-jogg:3.1.0-stable'
+  compile 'org.jmonkeyengine:jme3-terrain:3.1.0-stable'
+  compile 'org.jmonkeyengine:jme3-blender:3.1.0-stable'
+  compile 'org.jmonkeyengine:jme3-jbullet:3.1.0-stable'
+  compile 'org.jmonkeyengine:jme3-niftygui:3.1.0-stable'
+  compile 'org.jmonkeyengine:jme3-desktop:3.1.0-stable'
+  compile 'org.jmonkeyengine:jme3-lwjgl:3.1.0-stable'
+
+  runtime project(':assets')
 }
