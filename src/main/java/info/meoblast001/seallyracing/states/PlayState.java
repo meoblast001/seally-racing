@@ -7,6 +7,7 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.KeyTrigger;
+import com.jme3.light.AmbientLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
@@ -15,6 +16,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
+import info.meoblast001.seallyracing.CoursePath;
 import info.meoblast001.seallyracing.FollowCamera;
 import info.meoblast001.seallyracing.PlayerInput;
 
@@ -40,6 +42,7 @@ public class PlayState extends AbstractAppState {
   private SimpleApplication app;
   private Node rootNode;
   private Spatial player;
+  private CoursePath coursePath;
   private PlayerInput playerInput;
   private FollowCamera followCamera;
 
@@ -61,6 +64,19 @@ public class PlayState extends AbstractAppState {
     this.app = (SimpleApplication) app;
     this.rootNode = this.app.getRootNode();
 
+    // Create ambient light for world.
+    AmbientLight ambientLight = new AmbientLight();
+    ambientLight.setColor(ColorRGBA.White.mult(1.3f));
+    this.rootNode.addLight(ambientLight);
+
+    // Load current course.
+    Spatial course
+        = app.getAssetManager().loadModel("Scenes/DeveloperCourse/Course.j3o");
+    this.rootNode.attachChild(course);
+
+    // Fetch and initialise the course path.
+    coursePath = new CoursePath((Node) course);
+
     // Currently a simple box is used for the player.
     Box box = new Box(1, 1, 1);
     Geometry player = new Geometry("Player", box);
@@ -72,12 +88,6 @@ public class PlayState extends AbstractAppState {
 
     this.rootNode.attachChild(player);
     this.player = player;
-
-    // Create a static object sitting forward and to the side.
-    Geometry staticObject = new Geometry("StaticObject", box);
-    staticObject.setMaterial(mat);
-    staticObject.setLocalTranslation(2, 0, 100);
-    this.rootNode.attachChild(staticObject);
 
     // Create the camera attached to the player.
     followCamera = new FollowCamera(this.app.getCamera(), this.player,
