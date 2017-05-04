@@ -87,6 +87,7 @@ public class PlayState extends AbstractAppState {
     player.setMaterial(mat);
 
     this.rootNode.attachChild(player);
+    coursePath.addPlayer(player);
     this.player = player;
 
     // Create the camera attached to the player.
@@ -112,6 +113,9 @@ public class PlayState extends AbstractAppState {
   @Override
   public void update(float tpf) {
     super.update(tpf);
+
+    // Update course to validate player positions.
+    coursePath.update();
 
     // Update follow camera.
     followCamera.update();
