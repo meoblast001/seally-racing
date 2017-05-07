@@ -4,6 +4,10 @@ import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
+import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.control.GhostControl;
+import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.KeyTrigger;
@@ -24,6 +28,8 @@ import info.meoblast001.seallyracing.PlayerInput;
  * AppState for game play.
  */
 public class PlayState extends AbstractAppState {
+  // Name of user data specifying if a spatial is a player or not.
+  public static final String IS_PLAYER_ATTR = "isPlayer";
   // Speed at which player moves.
   public static final float PLAYER_SPEED = 12f;
   // Torque at which player rotates charchter. For pitch, this does include
@@ -40,6 +46,7 @@ public class PlayState extends AbstractAppState {
   public static final float PITCH_EXISTS_THRESHOLD = 0.0005f;
 
   private SimpleApplication app;
+  private BulletAppState bullet;
   private Node rootNode;
   private Spatial player;
   private CoursePath coursePath;
@@ -64,6 +71,10 @@ public class PlayState extends AbstractAppState {
     this.app = (SimpleApplication) app;
     this.rootNode = this.app.getRootNode();
 
+    // Initialise physics.
+    bullet = new BulletAppState();
+    stateManager.attach(bullet);
+
     // Create ambient light for world.
     AmbientLight ambientLight = new AmbientLight();
     ambientLight.setColor(ColorRGBA.White.mult(1.3f));
@@ -75,7 +86,7 @@ public class PlayState extends AbstractAppState {
     this.rootNode.attachChild(course);
 
     // Fetch and initialise the course path.
-    coursePath = new CoursePath((Node) course);
+    coursePath = new CoursePath((Node) course, bullet);
 
     // Currently a simple box is used for the player.
     Box box = new Box(1, 1, 1);
@@ -89,6 +100,14 @@ public class PlayState extends AbstractAppState {
     this.rootNode.attachChild(player);
     coursePath.addPlayer(player);
     this.player = player;
+
+    // Attribute that this is a player.
+    this.player.setUserData(IS_PLAYER_ATTR, true);
+    // Add physics to player
+    CollisionShape shape = CollisionShapeFactory.createBoxShape(this.player);
+    GhostControl playerPhysics = new GhostControl(shape);
+    this.player.addControl(playerPhysics);
+    bullet.getPhysicsSpace().add(playerPhysics);
 
     // Create the camera attached to the player.
     followCamera = new FollowCamera(this.app.getCamera(), this.player,
@@ -122,7 +141,7 @@ public class PlayState extends AbstractAppState {
 
     // Update player character.
     Vector3f forward = player.getLocalRotation().mult(Vector3f.UNIT_Z);
-    player.move(forward.mult(PLAYER_SPEED * tpf));
+    player.move(forward.mult(-PLAYER_SPEED * tpf));
 
     // Neutralise player pitch at a rate lower than the effects of player input.
     if (!playerInput.isPitchApplied()) {

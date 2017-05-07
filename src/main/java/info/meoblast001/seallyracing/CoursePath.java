@@ -1,9 +1,14 @@
 package info.meoblast001.seallyracing;
 
+import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.control.GhostControl;
+import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.SceneGraphVisitor;
 import com.jme3.scene.Spatial;
+import info.meoblast001.seallyracing.collision.CoursePointCollisionListener;
 
 import java.util.TreeMap;
 import java.util.Vector;
@@ -17,9 +22,9 @@ public class CoursePath {
   public static final String COURSE_PATH_NODE_NAME = "coursePath";
   // Name of user data on course point spatials which indicates the order the
   // player must reach them.
-  public static final String COURSE_ORDER_ATTRIBUTE = "courseOrder";
+  public static final String COURSE_ORDER_ATTR = "courseOrder";
   // Name of user data containing a player's target course point.
-  public static final String PLAYER_TARGET_POINT_ATTRIBUTE
+  public static final String PLAYER_TARGET_POINT_ATTR
       = "targetCoursePoint";
   // The player is considered to be out of bounds if it passes the distance
   // between the previous and next course points plus this value before reaching
@@ -36,14 +41,14 @@ public class CoursePath {
    * into an ordered list. Rotate these points to create a smooth path.
    * @param scene Root node of scene.
    */
-  public CoursePath(Node scene) {
+  public CoursePath(Node scene, BulletAppState bullet) {
     // Locate each course point and create an array of those points ordered by
     // the order data in the user data of the spatials.
     Spatial coursePath = scene.getChild(COURSE_PATH_NODE_NAME);
     final TreeMap<Integer, Spatial> points = new TreeMap<Integer, Spatial>();
     coursePath.breadthFirstTraversal(new SceneGraphVisitor() {
       public void visit(Spatial spatial) {
-        Integer order = spatial.getUserData(COURSE_ORDER_ATTRIBUTE);
+        Integer order = spatial.getUserData(COURSE_ORDER_ATTR);
         if (order != null) {
           points.put(order, spatial);
         }
@@ -63,7 +68,15 @@ public class CoursePath {
           = previous.getLocalTranslation().subtract(next.getLocalTranslation());
       current.getLocalRotation().lookAt(lookDirection,
                                         new Vector3f(0.0f, 1.0f, 0.0f));
+      CollisionShape shape = CollisionShapeFactory.createBoxShape(current);
+      GhostControl physics = new GhostControl(shape);
+      current.addControl(physics);
+      bullet.getPhysicsSpace().add(physics);
     }
+
+    // Install listener for collisions between player and node.
+    bullet.getPhysicsSpace()
+        .addCollisionListener(new CoursePointCollisionListener());
   }
 
   /**
@@ -71,7 +84,7 @@ public class CoursePath {
    * @param player Player spatial.
    */
   public void addPlayer(Spatial player) {
-    player.setUserData(PLAYER_TARGET_POINT_ATTRIBUTE, 0);
+    player.setUserData(PLAYER_TARGET_POINT_ATTR, 1);
     players.add(player);
   }
 
@@ -81,22 +94,22 @@ public class CoursePath {
    */
   public void update() {
     for (Spatial player : players) {
-      int targetPointIdx = player.getUserData(PLAYER_TARGET_POINT_ATTRIBUTE);
+      int targetPointIdx = player.getUserData(PLAYER_TARGET_POINT_ATTR);
       if (targetPointIdx < 0 || targetPointIdx >= coursePoints.length) {
         continue;
       }
       Spatial targetPoint = coursePoints[targetPointIdx];
       Spatial previousPoint = targetPointIdx == 0
           ? coursePoints[coursePoints.length - 1]
-          : coursePoints[targetPointIdx];
+          : coursePoints[targetPointIdx - 1];
 
       // Distance between previous course point and player may not exceed
       // distance between previous and next course points by more than the given
       // margin.
       float previousToPlayer = player.getWorldTranslation()
           .distance(previousPoint.getWorldTranslation());
-      float previousToTarget = previousPoint.getWorldTranslation()
-          .distance(targetPoint.getWorldTranslation());
+      float previousToTarget = targetPoint.getWorldTranslation()
+          .distance(previousPoint.getWorldTranslation());
       if (previousToPlayer > previousToTarget + PLAYER_TARGET_PASS_MARGIN) {
         player.setLocalTransform(previousPoint.getWorldTransform());
       }

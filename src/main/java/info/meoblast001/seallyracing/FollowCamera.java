@@ -1,5 +1,7 @@
 package info.meoblast001.seallyracing;
 
+import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Spatial;
@@ -30,8 +32,11 @@ public class FollowCamera {
   public void update() {
     Vector3f targetTranslation = followTarget.getWorldTranslation();
     Vector3f distanceTranslation = followTarget.getLocalRotation().
-      mult(Vector3f.UNIT_Z).mult(-distance);
+      mult(Vector3f.UNIT_Z).mult(distance);
     camera.setLocation(targetTranslation.add(distanceTranslation));
-    camera.setRotation(followTarget.getWorldRotation());
+    Quaternion rotation = new Quaternion();
+    rotation.fromAngleAxis(FastMath.PI, Vector3f.UNIT_Y);
+    rotation = followTarget.getWorldRotation().mult(rotation);
+    camera.setRotation(rotation);
   }
 }
