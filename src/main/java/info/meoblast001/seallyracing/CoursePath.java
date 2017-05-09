@@ -26,6 +26,9 @@ public class CoursePath {
   // Name of user data containing a player's target course point.
   public static final String PLAYER_TARGET_POINT_ATTR
       = "targetCoursePoint";
+  // Name of user data determining whether a player has reached any points in
+  // the course yet. False only at start of race.
+  public static final String PLAYER_ON_COURSE_ATTR = "onCourse";
   // The player is considered to be out of bounds if it passes the distance
   // between the previous and next course points plus this value before reaching
   // the next point.
@@ -85,6 +88,7 @@ public class CoursePath {
    */
   public void addPlayer(Spatial player) {
     player.setUserData(PLAYER_TARGET_POINT_ATTR, 0);
+    player.setUserData(PLAYER_ON_COURSE_ATTR, false);
     players.add(player);
   }
 
@@ -111,7 +115,12 @@ public class CoursePath {
       float previousToTarget = targetPoint.getWorldTranslation()
           .distance(previousPoint.getWorldTranslation());
       if (previousToPlayer > previousToTarget + PLAYER_TARGET_PASS_MARGIN) {
-        player.setLocalTransform(previousPoint.getWorldTransform());
+        // If the player is not on the course, going to the previous point could
+        // be a jump ahead in the race. Therefore go to target.
+        Spatial returnPoint
+            = player.getUserData(PLAYER_ON_COURSE_ATTR)
+            ? previousPoint : targetPoint;
+        player.setLocalTransform(returnPoint.getWorldTransform());
       }
     }
   }

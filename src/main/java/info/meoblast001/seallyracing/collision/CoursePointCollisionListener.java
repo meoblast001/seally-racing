@@ -61,6 +61,7 @@ public class CoursePointCollisionListener implements PhysicsCollisionListener {
         int totalCoursePoints = coursePath.getCoursePoints().length;
         player.setUserData(CoursePath.PLAYER_TARGET_POINT_ATTR,
                            (playerTarget + 1) % totalCoursePoints);
+        player.setUserData(CoursePath.PLAYER_ON_COURSE_ATTR, true);
       }
     }
   }
