@@ -11,6 +11,17 @@ import info.meoblast001.seallyracing.states.PlayState;
  * user data in the player to reflect progression in the course.
  */
 public class CoursePointCollisionListener implements PhysicsCollisionListener {
+  // Course path being followed.
+  private CoursePath coursePath;
+
+  /**
+   * Construct listener.
+   * @param coursePath Course path that players are following.
+   */
+  public CoursePointCollisionListener(CoursePath coursePath) {
+    this.coursePath = coursePath;
+  }
+
   /**
    * Handle collision between player characters and course points.
    * @see PhysicsCollisionListener#collision(PhysicsCollisionEvent)
@@ -47,8 +58,9 @@ public class CoursePointCollisionListener implements PhysicsCollisionListener {
       int courseOrder = coursePoint.getUserData(CoursePath.COURSE_ORDER_ATTR);
       if (playerTarget == courseOrder) {
         // Target reached. Set next target.
+        int totalCoursePoints = coursePath.getCoursePoints().length;
         player.setUserData(CoursePath.PLAYER_TARGET_POINT_ATTR,
-                           playerTarget + 1);
+                           (playerTarget + 1) % totalCoursePoints);
       }
     }
   }

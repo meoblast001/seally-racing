@@ -76,7 +76,7 @@ public class CoursePath {
 
     // Install listener for collisions between player and node.
     bullet.getPhysicsSpace()
-        .addCollisionListener(new CoursePointCollisionListener());
+        .addCollisionListener(new CoursePointCollisionListener(this));
   }
 
   /**
@@ -84,7 +84,7 @@ public class CoursePath {
    * @param player Player spatial.
    */
   public void addPlayer(Spatial player) {
-    player.setUserData(PLAYER_TARGET_POINT_ATTR, 1);
+    player.setUserData(PLAYER_TARGET_POINT_ATTR, 0);
     players.add(player);
   }
 
