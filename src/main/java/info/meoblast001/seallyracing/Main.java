@@ -7,29 +7,40 @@
 
 package info.meoblast001.seallyracing;
 
-import com.jme3.app.SimpleApplication;
-import info.meoblast001.seallyracing.states.PlayState;
+import com.jme3.system.JmeContext;
 
 /**
  * Main application class.
  */
-public class Main extends SimpleApplication {
+public class Main {
   /**
    * Application entrance.
    * @param args Command line arguments.
    */
   public static void main(String[] args) {
-    Main app = new Main();
-    app.start();
-  }
+     // TODO: Make client completely configurable in game. Make server
+     // configurable through config file.
+    if (args.length < 3) {
+      System.err.println("Requires parameters: client <host> <port>, "
+          + "server <port> <expectedClients>");
+      return;
+    }
+    String mode = args[0];
 
-  /**
-   * Initialise the game.
-   * @see SimpleApplication#simpleInitApp()
-   */
-  @Override
-  public void simpleInitApp() {
-    this.flyCam.setEnabled(false);
-    stateManager.attach(new PlayState());
+    if (mode.equals("client")) {
+      String host = args[1];
+      int port = Integer.parseInt(args[2]);
+
+      ClientApplication app = new ClientApplication(host, port);
+      app.start();
+    } else if (mode.equals("server")) {
+      int port = Integer.parseInt(args[1]);
+      int expectedClients = Integer.parseInt(args[2]);
+
+      ServerApplication app = new ServerApplication(port, expectedClients);
+      app.start(JmeContext.Type.Headless);
+    } else {
+      System.err.println("Mode must be \"client\" or \"server\".");
+    }
   }
 }
