@@ -115,4 +115,12 @@ public class CoursePath {
       }
     }
   }
+
+  /**
+   * Get list of course points.
+   * @return Course points.
+   */
+  public Spatial[] getCoursePoints() {
+    return coursePoints;
+  }
 }

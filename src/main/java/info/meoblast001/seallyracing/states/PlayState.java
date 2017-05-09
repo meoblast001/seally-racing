@@ -44,6 +44,8 @@ public class PlayState extends AbstractAppState {
   // Any pitch less than this amount (where 1 and -1 are completely up or down)
   // should no longer exist and is immediately neutralised to no pitch.
   public static final float PITCH_EXISTS_THRESHOLD = 0.0005f;
+  // Distance between player and first ring at start.
+  public static final float PLAYER_START_DISTANCE = 20.0f;
 
   private SimpleApplication app;
   private BulletAppState bullet;
@@ -87,6 +89,7 @@ public class PlayState extends AbstractAppState {
 
     // Fetch and initialise the course path.
     coursePath = new CoursePath((Node) course, bullet);
+    Spatial[] coursePoints = coursePath.getCoursePoints();
 
     // Currently a simple box is used for the player.
     Box box = new Box(1, 1, 1);
@@ -96,6 +99,13 @@ public class PlayState extends AbstractAppState {
                                 "Common/MatDefs/Misc/Unshaded.j3md");
     mat.setColor("Color", ColorRGBA.Blue);
     player.setMaterial(mat);
+
+    // Move player in front of first course point.
+    if (coursePoints.length > 0) {
+      Spatial startPoint = coursePoints[0];
+      Vector3f forward = startPoint.getWorldRotation().mult(Vector3f.UNIT_Z);
+      player.move(forward.mult(PLAYER_START_DISTANCE));
+    }
 
     this.rootNode.attachChild(player);
     coursePath.addPlayer(player);
