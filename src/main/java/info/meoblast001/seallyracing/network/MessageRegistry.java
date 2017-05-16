@@ -1,7 +1,7 @@
 package info.meoblast001.seallyracing.network;
 
 import com.jme3.network.serializing.Serializer;
-import info.meoblast001.seallyracing.network.messages.GameStatusMessage;
+import info.meoblast001.seallyracing.network.messages.GameStartMessage;
 
 /**
  * Registers all message types with serialiser and provides access to their
@@ -13,6 +13,6 @@ public class MessageRegistry {
    */
   public static void registerMessages()
   {
-    Serializer.registerClass(GameStatusMessage.class);
+    Serializer.registerClass(GameStartMessage.class);
   }
 }

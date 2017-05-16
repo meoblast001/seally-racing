@@ -2,9 +2,9 @@ package info.meoblast001.seallyracing.network;
 
 import com.jme3.network.*;
 import info.meoblast001.seallyracing.ServerApplication;
-import info.meoblast001.seallyracing.network.messages.GameStatusMessage;
+import info.meoblast001.seallyracing.network.messages.GameStartMessage;
 
-import java.util.HashSet;
+import java.util.HashMap;
 
 /**
  * Handles network activity and messages for the server.
@@ -14,7 +14,8 @@ public class ServerNetListener
   private static final String REASON_DUPLICATE_CLIENT = "DUPLICATE_CLIENT";
 
   private int expectedClients;
-  private HashSet<Integer> collectedClients = new HashSet<Integer>();
+  private HashMap<Integer, HostedConnection> collectedClients
+      = new HashMap<Integer, HostedConnection>();
 
   /**
    * Constructor.
@@ -26,7 +27,7 @@ public class ServerNetListener
                            int expectedClients) {
     this.expectedClients = expectedClients;
     server.addConnectionListener(this);
-    server.addMessageListener(this, GameStatusMessage.class);
+    server.addMessageListener(this, GameStartMessage.class);
   }
 
   /**
@@ -34,15 +35,27 @@ public class ServerNetListener
    */
   public void connectionAdded(Server server, HostedConnection client)
   {
-    if(collectedClients.contains(client.getId())) {
+    if (collectedClients.containsKey(client.getId())) {
       client.close(REASON_DUPLICATE_CLIENT);
     }
-    collectedClients.add(client.getId());
+    collectedClients.put(client.getId(), client);
     // Once all clients have connected, broadcast the start signal.
-    if(collectedClients.size() == expectedClients) {
-      GameStatusMessage message
-          = new GameStatusMessage(GameStatusMessage.Status.GAME_BEGIN);
-      server.broadcast(message);
+    if (collectedClients.size() == expectedClients) {
+      sendStartMessages();
+    }
+  }
+
+  /**
+   * Send individualised message to each client to start the game.
+   */
+  private void sendStartMessages()
+  {
+    HostedConnection[] clients
+        = collectedClients.values().toArray(new HostedConnection[0]);
+    for (int i = 0; i < clients.length; ++i) {
+      HostedConnection client = clients[i];
+      GameStartMessage message = new GameStartMessage(clients.length, i);
+      client.send(message);
     }
   }
 
@@ -51,7 +64,7 @@ public class ServerNetListener
    */
   public void connectionRemoved(Server server, HostedConnection client)
   {
-    if(collectedClients.contains(client.getId())) {
+    if (collectedClients.containsKey(client.getId())) {
       collectedClients.remove(client.getId());
     }
   }

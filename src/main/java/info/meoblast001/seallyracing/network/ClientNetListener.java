@@ -5,7 +5,7 @@ import com.jme3.network.ClientStateListener;
 import com.jme3.network.Message;
 import com.jme3.network.MessageListener;
 import info.meoblast001.seallyracing.ClientApplication;
-import info.meoblast001.seallyracing.network.messages.GameStatusMessage;
+import info.meoblast001.seallyracing.network.messages.GameStartMessage;
 
 import java.util.concurrent.Callable;
 
@@ -23,7 +23,7 @@ public class ClientNetListener implements MessageListener, ClientStateListener {
   public ClientNetListener(ClientApplication application, Client client) {
     this.application = application;
     client.addClientStateListener(this);
-    client.addMessageListener(this, GameStatusMessage.class);
+    client.addMessageListener(this, GameStartMessage.class);
   }
 
   /**
@@ -47,18 +47,14 @@ public class ClientNetListener implements MessageListener, ClientStateListener {
    */
   public void messageReceived(Object source, Message message)
   {
-    if (message instanceof GameStatusMessage) {
-      GameStatusMessage msg = (GameStatusMessage) message;
-      switch(msg.status) {
-        case GAME_BEGIN:
-          application.enqueue(new Callable<Void>() {
-            public Void call() throws Exception {
-              application.beginGame();
-              return null;
-            }
-          });
-          break;
-      }
+    if (message instanceof GameStartMessage) {
+      final GameStartMessage msg = (GameStartMessage) message;
+      application.enqueue(new Callable<Void>() {
+        public Void call() throws Exception {
+          application.beginGame(msg.totalPlayers, msg.playerIdx);
+          return null;
+        }
+      });
     }
   }
 }

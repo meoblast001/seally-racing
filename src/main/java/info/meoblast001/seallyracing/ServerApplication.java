@@ -43,7 +43,7 @@ public class ServerApplication extends SimpleApplication {
     }
 
     this.flyCam.setEnabled(false);
-    stateManager.attach(new PlayState());
+    stateManager.attach(new PlayState(expectedClients));
   }
 
   /**
