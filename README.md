@@ -12,6 +12,14 @@ finalised.
 
 #### Building and Launching
 
+First you must check out the assets submodule if you want the game to run. From
+the project directory, run:
+
+```shell
+git submodule init
+git submodule update
+```
+
 Gradle is used to build this codebase.
 A wrapper is provided that can download Gradle.
 You just need Java first, then you can run via Gradle:
@@ -33,8 +41,11 @@ bin/seally-racing
 While this project is in early stages of development, there are several ways you
 can start getting involved:
 
-* Look at our issue tracker and wiki at the
-  [Seally Racing project in Redmine](https://development.meoblast001.info/projects/seally-racing).
-* Join irc.freenode.net on the channel #seally-racing to get up to date with the
-  project status.
+* Look at issues and milestones in the
+  [issue tracker on GitHub](https://github.com/meoblast001/seally-racing/issues).
+* Read the [wiki on GitHub](https://github.com/meoblast001/seally-racing/wiki).
+* Join us in IRC on freenode (irc.freenode.net) in the channel #seally-racing.
+  If you don't have or want your own IRC client, you can use the
+  [freenode web chat](https://webchat.freenode.net/) or services like
+  [IRCCloud](https://www.irccloud.com/).
 * Fork the project, change the code or art, and submit a pull request.
