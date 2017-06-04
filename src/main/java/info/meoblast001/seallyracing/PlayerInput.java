@@ -61,9 +61,9 @@ public class PlayerInput implements AnalogListener, ActionListener {
       rotation.multLocal(player.getLocalRotation());
       player.setLocalRotation(rotation);
     } else if (name.equals(MOVE_UP) && pitch < PlayState.PLAYER_MAX_PITCH) {
-      player.rotate(-PlayState.PLAYER_TORQUE * tpf, 0.0f, 0.0f);
-    } else if (name.equals(MOVE_DOWN) && pitch > -PlayState.PLAYER_MAX_PITCH) {
       player.rotate(PlayState.PLAYER_TORQUE * tpf, 0.0f, 0.0f);
+    } else if (name.equals(MOVE_DOWN) && pitch > -PlayState.PLAYER_MAX_PITCH) {
+      player.rotate(-PlayState.PLAYER_TORQUE * tpf, 0.0f, 0.0f);
     }
   }
 

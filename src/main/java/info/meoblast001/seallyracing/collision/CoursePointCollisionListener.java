@@ -4,7 +4,7 @@ import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.scene.Spatial;
 import info.meoblast001.seallyracing.CoursePath;
-import info.meoblast001.seallyracing.states.PlayState;
+import info.meoblast001.seallyracing.PlayerManager;
 
 /**
  * Handles collisions between player characters and course points and updates
@@ -34,12 +34,12 @@ public class CoursePointCollisionListener implements PhysicsCollisionListener {
     Spatial coursePoint = null;
     // Determine which node is the player.
     if (nodeA != null
-        && nodeA.getUserData(PlayState.IS_PLAYER_ATTR) != null
-        && (Boolean) nodeA.getUserData(PlayState.IS_PLAYER_ATTR)) {
+        && nodeA.getUserData(PlayerManager.IS_PLAYER_ATTR) != null
+        && (Boolean) nodeA.getUserData(PlayerManager.IS_PLAYER_ATTR)) {
       player = nodeA;
     } else if (nodeB != null
-               && nodeB.getUserData(PlayState.IS_PLAYER_ATTR) != null
-               && (Boolean) nodeB.getUserData(PlayState.IS_PLAYER_ATTR)) {
+               && nodeB.getUserData(PlayerManager.IS_PLAYER_ATTR) != null
+               && (Boolean) nodeB.getUserData(PlayerManager.IS_PLAYER_ATTR)) {
       player = nodeB;
     }
     // Determine which node is the course point.

@@ -62,9 +62,11 @@ public class ClientApplication extends SimpleApplication {
 
   /**
    * Begin the game.
+   * @param totalPlayers Total number of players in game.
+   * @param localPlayerIdx Order of client player starting at 0.
    */
-  public void beginGame() {
-    playState = new PlayState();
+  public void beginGame(int totalPlayers, int localPlayerIdx) {
+    playState = new PlayState(totalPlayers, localPlayerIdx);
     waitingState.setEnabled(false);
     stateManager.attach(playState);
   }
