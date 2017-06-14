@@ -1,8 +1,10 @@
 package info.meoblast001.seallyracing.network;
 
 import com.jme3.network.*;
+import info.meoblast001.seallyracing.PlayerInput;
 import info.meoblast001.seallyracing.ServerApplication;
 import info.meoblast001.seallyracing.network.messages.GameStartMessage;
+import info.meoblast001.seallyracing.network.messages.PlayerAnalogInputMessage;
 
 import java.util.HashMap;
 
@@ -28,6 +30,7 @@ public class ServerNetListener
     this.expectedClients = expectedClients;
     server.addConnectionListener(this);
     server.addMessageListener(this, GameStartMessage.class);
+    server.addMessageListener(this, PlayerAnalogInputMessage.class);
   }
 
   /**
@@ -74,6 +77,13 @@ public class ServerNetListener
    */
   public void messageReceived(HostedConnection source, Message message)
   {
-    // TODO: Implement message receiving functionality.
+    if (message instanceof PlayerAnalogInputMessage) {
+      final PlayerAnalogInputMessage msg = (PlayerAnalogInputMessage) message;
+      // TODO: Call PlayerInput.
+      System.out.println("Got analog \"" + msg.name + "\": " + msg.value);
+    }
+  }
+
+  public void registerPlayerInput(String playerName, PlayerInput playerInput) {
   }
 }

@@ -70,4 +70,12 @@ public class ClientApplication extends SimpleApplication {
     waitingState.setEnabled(false);
     stateManager.attach(playState);
   }
+
+  /**
+   * Get local instance of client.
+   * @return Client connection.
+   */
+  public Client getClient() {
+    return client;
+  }
 }

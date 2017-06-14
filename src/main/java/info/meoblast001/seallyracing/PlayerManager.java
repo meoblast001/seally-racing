@@ -170,6 +170,14 @@ public class PlayerManager {
   }
 
   /**
+   * Get all players.
+   * @return Array of all players.
+   */
+  public Spatial[] getPlayers() {
+    return players;
+  }
+
+  /**
    * Get the player associated with the current client.
    * @return Player's spatial.
    */

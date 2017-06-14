@@ -14,10 +14,7 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import info.meoblast001.seallyracing.CoursePath;
-import info.meoblast001.seallyracing.FollowCamera;
-import info.meoblast001.seallyracing.PlayerInput;
-import info.meoblast001.seallyracing.PlayerManager;
+import info.meoblast001.seallyracing.*;
 
 /**
  * AppState for game play.
@@ -97,10 +94,14 @@ public class PlayState extends AbstractAppState {
     // Fetch and initialise the course path.
     coursePath = new CoursePath((Node) course, bullet);
 
-    // Create player manager either for server or client.
+    // Create player manager and input either for server or client.
     if (isServer) {
       playerManager = new PlayerManager(this.app, coursePath, bullet,
                                         totalPlayers);
+      ServerApplication serverApp = (ServerApplication) this.app;
+      for (Spatial player : playerManager.getPlayers()) {
+        new PlayerInput(player, serverApp.getServerNetListener());
+      }
     } else {
       playerManager = new PlayerManager(this.app, coursePath, bullet,
                                         totalPlayers, localPlayerIdx);
@@ -113,7 +114,8 @@ public class PlayState extends AbstractAppState {
       InputManager input = app.getInputManager();
       String[] mappingNames = new String[] { PlayerInput.MOVE_LEFT,
           PlayerInput.MOVE_RIGHT, PlayerInput.MOVE_UP, PlayerInput.MOVE_DOWN };
-      playerInput = new PlayerInput(playerManager.getLocalPlayer());
+      ClientApplication clientApp = (ClientApplication) this.app;
+      playerInput = new PlayerInput(playerManager.getLocalPlayer(), clientApp.getClient());
       input.addListener(playerInput, mappingNames);
       input.addMapping(PlayerInput.MOVE_LEFT, new KeyTrigger(KeyInput.KEY_A));
       input.addMapping(PlayerInput.MOVE_RIGHT, new KeyTrigger(KeyInput.KEY_D));

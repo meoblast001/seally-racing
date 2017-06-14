@@ -16,6 +16,7 @@ public class ServerApplication extends SimpleApplication {
   private int port;
   private int expectedClients;
   Server server;
+  ServerNetListener serverNetListener;
 
   /**
    * Constructor.
@@ -36,7 +37,7 @@ public class ServerApplication extends SimpleApplication {
     try {
       server = Network.createServer(port);
       server.start();
-      new ServerNetListener(this, server, expectedClients);
+      serverNetListener = new ServerNetListener(this, server, expectedClients);
     } catch (IOException e) {
       // TODO: Handle exception.
       System.err.println("Error creating server.");
@@ -53,5 +54,21 @@ public class ServerApplication extends SimpleApplication {
   public void destroy() {
     server.close();
     super.destroy();
+  }
+
+  /**
+   * Get local instance of server.
+   * @return Server connection.
+   */
+  public Server getServer() {
+    return server;
+  }
+
+  /**
+   * Get the listener that responds to network activity for the server.
+   * @return Server network listener.
+   */
+  public ServerNetListener getServerNetListener() {
+    return serverNetListener;
   }
 }

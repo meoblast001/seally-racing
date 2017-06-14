@@ -4,7 +4,10 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import com.jme3.network.Client;
 import com.jme3.scene.Spatial;
+import info.meoblast001.seallyracing.network.ServerNetListener;
+import info.meoblast001.seallyracing.network.messages.PlayerAnalogInputMessage;
 import info.meoblast001.seallyracing.states.PlayState;
 
 /**
@@ -17,14 +20,34 @@ public class PlayerInput implements AnalogListener, ActionListener {
   public static final String MOVE_UP = "Up";
   public static final String MOVE_DOWN = "Down";
 
+  private boolean isServer;
   // Player character.
   private Spatial player;
+  private Client client;
   // Is pitch being applied?
   private boolean pitchAppliedUp;
   private boolean pitchAppliedDown;
 
-  public PlayerInput(Spatial player) {
+  /**
+   * Initialise for the client. Apply changes and send them to the server.
+   * @param player Player in world affected by player input.
+   * @param client Client connection to use.
+   */
+  public PlayerInput(Spatial player, Client client) {
+    isServer = false;
     this.player = player;
+    this.client = client;
+  }
+
+  /**
+   * Initialise for the server. Set as listener to ServerNetListener, which will call methods to invoke input.
+   * @param player Player in world which this PlayerInput controls.
+   * @param serverNetListener ServerNetListener with which this PlayerInput is installed as a callback.d
+   */
+  public PlayerInput(Spatial player, ServerNetListener serverNetListener) {
+    isServer = true;
+    this.player = player;
+    serverNetListener.registerPlayerInput(player.getName(), this);
   }
 
   /**
@@ -64,6 +87,15 @@ public class PlayerInput implements AnalogListener, ActionListener {
       player.rotate(PlayState.PLAYER_TORQUE * tpf, 0.0f, 0.0f);
     } else if (name.equals(MOVE_DOWN) && pitch > -PlayState.PLAYER_MAX_PITCH) {
       player.rotate(-PlayState.PLAYER_TORQUE * tpf, 0.0f, 0.0f);
+    } else {
+      return;
+    }
+
+    if (!isServer) {
+      // Send over network. Need not be reliable because analog events usually happen very frequently.
+      PlayerAnalogInputMessage message = new PlayerAnalogInputMessage(name, value);
+      message.setReliable(false);
+      client.send(message);
     }
   }
 

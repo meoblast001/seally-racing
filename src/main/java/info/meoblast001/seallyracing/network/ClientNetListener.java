@@ -6,6 +6,7 @@ import com.jme3.network.Message;
 import com.jme3.network.MessageListener;
 import info.meoblast001.seallyracing.ClientApplication;
 import info.meoblast001.seallyracing.network.messages.GameStartMessage;
+import info.meoblast001.seallyracing.network.messages.PlayerAnalogInputMessage;
 
 import java.util.concurrent.Callable;
 
@@ -24,6 +25,7 @@ public class ClientNetListener implements MessageListener, ClientStateListener {
     this.application = application;
     client.addClientStateListener(this);
     client.addMessageListener(this, GameStartMessage.class);
+    client.addMessageListener(this, PlayerAnalogInputMessage.class);
   }
 
   /**
