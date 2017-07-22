@@ -115,7 +115,8 @@ public class PlayState extends AbstractAppState {
       String[] mappingNames = new String[] { PlayerInput.MOVE_LEFT,
           PlayerInput.MOVE_RIGHT, PlayerInput.MOVE_UP, PlayerInput.MOVE_DOWN };
       ClientApplication clientApp = (ClientApplication) this.app;
-      playerInput = new PlayerInput(playerManager.getLocalPlayer(), clientApp.getClient());
+      playerInput = new PlayerInput(playerManager.getLocalPlayer(),
+                                    clientApp.getClient());
       input.addListener(playerInput, mappingNames);
       input.addMapping(PlayerInput.MOVE_LEFT, new KeyTrigger(KeyInput.KEY_A));
       input.addMapping(PlayerInput.MOVE_RIGHT, new KeyTrigger(KeyInput.KEY_D));

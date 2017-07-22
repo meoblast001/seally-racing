@@ -124,8 +124,9 @@ public class PlayerManager {
   }
 
   /**
-   * Position all of the players to their start positions. Players placed on an XY plane in front of the first course
-   * point. Fill columns first and then add new rows.
+   * Position all of the players to their start positions. Players placed on an
+   * XY plane in front of the first course point. Fill columns first and then
+   * add new rows.
    * @param players Array of all players in game.
    */
   private void positionPlayers(Spatial[] players) {
@@ -136,7 +137,8 @@ public class PlayerManager {
     }
     Spatial firstCoursePoint = coursePoints[0];
 
-    // Players start on an X/Y plane. Determine the amount of rows and columns. Fill rows before starting new columns.
+    // Players start on an X/Y plane. Determine the amount of rows and columns.
+    // Fill rows before starting new columns.
     int rows = (players.length / (MAX_COLUMNS + 1)) + 1,
         columns = Math.min(players.length, MAX_COLUMNS);
     // Determine the distance on the X axis to the furthest players.
@@ -146,14 +148,16 @@ public class PlayerManager {
     for (int i = 0; i < players.length; ++i) {
       Spatial player = players[i];
       // X axis starts on the far left and begins placing players left to right.
-      // Y axis starts on the far low point and begins placing rows from bottom to top as rows fill.
+      // Y axis starts on the far low point and begins placing rows from bottom
+      // to top as rows fill.
       // Z axis is a constant distance from the first course point.
       float x = (i % columns) * PLAYER_START_SEPARATION - xEnd,
             y = -(i / columns) * PLAYER_START_SEPARATION + yEnd;
       player.setLocalTransform(firstCoursePoint.getWorldTransform());
       player.move(player.getLocalRotation().mult(Vector3f.UNIT_X).mult(x));
       player.move(player.getLocalRotation().mult(Vector3f.UNIT_Y).mult(y));
-      player.move(player.getLocalRotation().mult(Vector3f.UNIT_Z).mult(PLAYER_START_DISTANCE));
+      player.move(player.getLocalRotation().mult(Vector3f.UNIT_Z)
+          .mult(PLAYER_START_DISTANCE));
     }
   }
 

@@ -40,9 +40,11 @@ public class PlayerInput implements AnalogListener, ActionListener {
   }
 
   /**
-   * Initialise for the server. Set as listener to ServerNetListener, which will call methods to invoke input.
+   * Initialise for the server. Set as listener to ServerNetListener, which will
+   * call methods to invoke input.
    * @param player Player in world which this PlayerInput controls.
-   * @param serverNetListener ServerNetListener with which this PlayerInput is installed as a callback.d
+   * @param serverNetListener ServerNetListener with which this PlayerInput is
+   *                          installed as a callback.
    */
   public PlayerInput(Spatial player, ServerNetListener serverNetListener) {
     isServer = true;
@@ -92,8 +94,10 @@ public class PlayerInput implements AnalogListener, ActionListener {
     }
 
     if (!isServer) {
-      // Send over network. Need not be reliable because analog events usually happen very frequently.
-      PlayerAnalogInputMessage message = new PlayerAnalogInputMessage(name, value);
+      // Send over network. Need not be reliable because analog events usually
+      // happen very frequently.
+      PlayerAnalogInputMessage message
+          = new PlayerAnalogInputMessage(name, value);
       message.setReliable(false);
       client.send(message);
     }
